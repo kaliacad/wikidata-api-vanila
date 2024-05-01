@@ -1,49 +1,52 @@
-document.getElementById("searchButton").addEventListener("click", function () {
-  const searchTerm = document.getElementById("searchQuery").value.trim();
+document
+  .getElementById("searchForm")
+  .addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const searchTerm = document.getElementById("searchQuery").value.trim();
 
-  if (!searchTerm) {
-    alert("Please enter a search term.");
-    return;
-  }
+    if (!searchTerm) {
+      alert("Please enter a search term.");
+      return;
+    }
 
-  showLoadingIndicator(); // Show loading indicator before the fetch
+    showLoadingIndicator();
 
-  const endpoint = "https://www.wikidata.org/w/api.php";
-  const params = {
-    origin: "*",
-    action: "wbsearchentities",
-    format: "json",
-    search: searchTerm,
-    limit: 100,
-    language: "en",
-    props: "labels|descriptions|claims|thumbnail",
-    uselang: "en",
-    formatversion: "2",
-  };
+    const endpoint = "https://www.wikidata.org/w/api.php";
+    const params = {
+      origin: "*",
+      action: "wbsearchentities",
+      format: "json",
+      search: searchTerm,
+      limit: 100,
+      language: "en",
+      props: "labels|descriptions|claims|thumbnail",
+      uselang: "en",
+      formatversion: "2",
+    };
 
-  const queryString = new URLSearchParams(params).toString();
+    const queryString = new URLSearchParams(params).toString();
 
-  fetch(`${endpoint}?${queryString}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error(`Error: ${response.status}`);
-      return response.json();
+    fetch(`${endpoint}?${queryString}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     })
-    .then((data) => {
-      hideLoadingIndicator(); // Hide loading indicator on successful data fetch
-      handleSearchResults(data.search);
-    })
-    .catch((error) => {
-      console.error("Request error:", error);
-      alert("An error occurred while processing the request.");
-      hideLoadingIndicator(); // Hide loading indicator on error
-    });
-});
+      .then((response) => {
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        hideLoadingIndicator();
+        handleSearchResults(data.search);
+      })
+      .catch((error) => {
+        console.error("Request error:", error);
+        alert("An error occurred while processing the request.");
+        hideLoadingIndicator();
+      });
+  });
 
 function showLoadingIndicator() {
   document.getElementById("loadingIndicator").style.display = "block";
