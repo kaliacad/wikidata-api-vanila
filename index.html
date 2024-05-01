@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wikidata Search</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="container">
+    <header class="header">
+      <h1>Search on Wikidata</h1>
+    </header>
+    <main class="main">
+      <div id="loadingIndicator" class="loading-spinner"></div>
+      <form id="searchForm" class="search-box">
+        <input
+          type="text"
+          id="searchQuery"
+          placeholder="Type anything you want"
+          aria-label="Search input"
+        />
+        <button type="submit" id="searchButton">Search</button>
+      </form>
+      <section id="results" class="results"></section>
+    </main>
+    <footer class="footer">
+      <p>© 2024 Wikidata Search Tool. All rights reserved.</p>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>
