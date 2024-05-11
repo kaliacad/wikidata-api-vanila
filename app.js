@@ -35,6 +35,7 @@ document
       })
       .then((data) => {
         const ids = data.search.map((item) => item.id).join("|");
+        console.log(ids);
         fetchEntityDetails(ids);
       })
       .catch((error) => {
@@ -84,7 +85,7 @@ function handleEntityDetails(entities) {
 
   if (entities) {
     Object.values(entities).forEach((entity) => {
-      displayResult(entity);
+      entity.labels.en && displayResult(entity);
     });
   } else {
     resultsContainer.innerHTML = "No results found.";
@@ -92,19 +93,29 @@ function handleEntityDetails(entities) {
 }
 
 function displayResult(entity) {
-  console.log(entity);
   const resultsContainer = document.getElementById("results");
   const resultDiv = document.createElement("div");
   resultDiv.className = "result";
 
+  const resultText = document.createElement("div");
+
   const label = document.createElement("strong");
   label.textContent = entity.labels.en.value + ": ";
-  resultDiv.appendChild(label);
+  resultText.appendChild(label);
 
-  if (entity.descriptions && entity.descriptions.en) {
+  if (entity.descriptions?.en) {
     const description = document.createTextNode(entity.descriptions.en.value);
-    resultDiv.appendChild(description);
+    resultText.appendChild(description);
   }
+
+  const link = document.createElement("a");
+  link.href = `https://www.wikidata.org/wiki/${entity.id}`;
+  link.textContent = "View on Wikidata";
+  link.target = "_blank";
+
+  resultText.append(document.createElement("br"), link);
+
+  resultDiv.appendChild(resultText);
 
   if (entity.claims?.P18?.length > 0) {
     const imageFileName = entity.claims.P18[0].mainsnak.datavalue.value;
@@ -112,17 +123,13 @@ function displayResult(entity) {
     const image = document.createElement("img");
     image.src = imageUrl;
     image.alt = entity.labels.en.value;
-    resultDiv.appendChild(document.createElement("br"));
+    resultDiv.appendChild(image);
+  } else {
+    const image = document.createElement("img");
+    image.src = "images/empty.jpeg";
+    image.alt = entity.labels?.en?.value;
     resultDiv.appendChild(image);
   }
-
-  resultDiv.appendChild(document.createElement("br"));
-
-  const link = document.createElement("a");
-  link.href = `https://www.wikidata.org/wiki/${entity.id}`;
-  link.textContent = "View on Wikidata";
-  link.target = "_blank";
-  resultDiv.appendChild(link);
 
   resultsContainer.appendChild(resultDiv);
 }
